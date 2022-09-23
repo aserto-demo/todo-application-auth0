@@ -1,4 +1,4 @@
-# React Todo App
+# React Todo App using Auth0 for authentication
 
 ## Available Scripts
 
