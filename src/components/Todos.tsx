@@ -1,21 +1,15 @@
 import * as React from "react";
-import { Todo } from "./Todo";
-import { ITodosProps, ITodo } from "../interfaces";
+import { Todo as TodoItem } from "./Todo";
+import { TodosPropsn, Todo } from "../interfaces";
 import { useTodoService } from "../todoService";
-export const Todos: React.FC<ITodosProps> = (props) => {
+export const Todos: React.FC<TodosPropsn> = (props) => {
   const { saveTodo, deleteTodo } = useTodoService();
 
   const handleCompletedChange = async (todoId: string, completed: boolean) => {
     const todo = props.todos?.find((todo) => todo.ID === todoId);
     if (todo) {
       try {
-        await saveTodo(
-          {
-            ...todo,
-            Completed: completed,
-          },
-          true
-        );
+        await saveTodo(todo.ID, { ...todo, Completed: completed });
       } catch (e) {
         e instanceof Error && props.errorHandler(e.message);
       }
@@ -26,7 +20,7 @@ export const Todos: React.FC<ITodosProps> = (props) => {
     props.refreshTodos();
   };
 
-  const handleDeleteChange = async (todo: ITodo) => {
+  const handleDeleteChange = async (todo: Todo) => {
     try {
       await deleteTodo(todo);
     } catch (e) {
@@ -43,7 +37,7 @@ export const Todos: React.FC<ITodosProps> = (props) => {
           ?.filter((todo) => todo.Completed)
           .map((todo) => {
             return (
-              <Todo
+              <TodoItem
                 todo={todo}
                 handleCompletedChange={handleCompletedChange}
                 handleDeleteChange={handleDeleteChange}
@@ -56,7 +50,7 @@ export const Todos: React.FC<ITodosProps> = (props) => {
           ?.filter((todo) => !todo.Completed)
           .map((todo) => {
             return (
-              <Todo
+              <TodoItem
                 todo={todo}
                 handleCompletedChange={handleCompletedChange}
                 handleDeleteChange={handleDeleteChange}

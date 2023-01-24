@@ -1,10 +1,14 @@
-export interface ITodo {
-  ID: string;
+export interface TodoValues {
   Title: string;
   Completed: boolean;
+}
+
+export interface Todo extends TodoValues {
+  ID: string;
   OwnerID: string;
 }
-export interface IUser {
+
+export interface User {
   id: string;
   email: string;
   picture: string;
@@ -12,31 +16,32 @@ export interface IUser {
 }
 
 export interface ITodoService {
-  listTodos: () => Promise<ITodo[]>;
-  saveTodo: (todo: ITodo, isUpdate?: boolean) => Promise<ITodo[]>;
-  deleteTodo: (todo: ITodo) => Promise<void | Response>;
-  getUser: (sub: string) => Promise<IUser>;
+  listTodos: () => Promise<Todo[]>;
+  createTodo: (todo: TodoValues) => Promise<Todo>;
+  saveTodo: (id: string, values: TodoValues) => Promise<Todo[]>;
+  deleteTodo: (todo: Todo) => Promise<void | Response>;
+  getUser: (sub: string) => Promise<User>;
 }
 
-export interface ITodoProps {
-  todo: ITodo;
+export interface TodoProps {
+  todo: Todo;
   handleCompletedChange: (todoId: string, completed: boolean) => void;
-  handleDeleteChange: (Todo: ITodo) => void;
+  handleDeleteChange: (Todo: Todo) => void;
 }
 
-export interface ITodosProps {
-  todos: ITodo[] | void;
+export interface TodosPropsn {
+  todos: Todo[] | void;
   showCompleted: boolean;
   showActive: boolean;
   refreshTodos: () => void;
   errorHandler(errorText: string): void;
 }
 
-export interface IAppProps {
-  user: IAuthUser;
+export interface AppProps {
+  user: AuthUser;
 }
 
-export interface IAuthUser {
+export interface AuthUser {
   email: string;
   sub: string;
 }

@@ -1,7 +1,13 @@
 import React, { useContext } from "react";
-import { ITodo, ITodoService, IUser } from "./interfaces";
+import { Todo, TodoValues, ITodoService, User } from "./interfaces";
 
 const serviceContext = React.createContext({ token: "" });
+
+const urls = {
+  todos: `${process.env.REACT_APP_API_ORIGIN}/todos`,
+  todo: (id: string) => `${process.env.REACT_APP_API_ORIGIN}/todos/${id}`,
+  user: (id: string) => `${process.env.REACT_APP_API_ORIGIN}/users/${id}`,
+};
 
 export const useTodoService: () => ITodoService = () => {
   const { token } = useContext(serviceContext);
@@ -10,78 +16,60 @@ export const useTodoService: () => ITodoService = () => {
   headers.append("Authorization", `Bearer ${token}`);
   headers.append("Content-Type", "application/json");
 
-  const listTodos: () => Promise<ITodo[]> = async () => {
-    const response = await fetch(`${process.env.REACT_APP_API_ORIGIN}/todos`, {
-      headers: headers,
-    });
-
-    if (response.status === 200) {
-      return await response.json();
-    } else {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
+  const listTodos = async (): Promise<Todo[]> => {
+    const response = await fetch(urls.todos, { headers: headers });
+    return await jsonOrError(response);
   };
 
-  const saveTodo: (
-    todo: ITodo,
-    isUpdate?: boolean
-  ) => Promise<ITodo[]> = async (todo, isUpdate = false) => {
-    const baseUrl = `${process.env.REACT_APP_API_ORIGIN}/todo`
-    const url = isUpdate ? baseUrl + "/" + todo.OwnerID : baseUrl;
-    const response = await fetch(url, {
-      method: isUpdate ? "PUT" : "POST",
-      headers: headers,
+  const createTodo = async (todo: TodoValues): Promise<Todo> => {
+    const response = await fetch(urls.todos, {
+      method: "POST",
+      headers,
       body: JSON.stringify(todo),
     });
+    return await jsonOrError(response);
+  };
 
-    if (response.status === 200) {
-      return await response.json();
-    } else {
+  const saveTodo = async (id: string, values: TodoValues): Promise<Todo[]> => {
+    const response = await fetch(urls.todo(id), {
+      method: "PUT",
+      headers: headers,
+      body: JSON.stringify(values),
+    });
+    return await jsonOrError(response);
+  };
+
+  const deleteTodo: (todo: Todo) => Promise<void | Response> = async (todo) => {
+    const response: Response = await fetch(urls.todo(todo.ID), {
+      method: "DELETE",
+      body: JSON.stringify(todo),
+      headers: headers,
+    });
+    if (response.status !== 200) {
       throw new Error(`${response.status}: ${response.statusText}`);
     }
   };
 
-  const deleteTodo: (todo: ITodo) => Promise<void | Response> = async (
-    todo
-  ) => {
-    const response: Response = await fetch(
-      `${process.env.REACT_APP_API_ORIGIN}/todo/${todo.OwnerID}`,
-      {
-        method: "DELETE",
-        body: JSON.stringify(todo),
-        headers: headers,
-      }
-    );
-    if (response.status === 200) {
-      return response;
-    } else {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
-  };
-
-  const getUser: (userId: string) => Promise<IUser> = async (userId) => {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_ORIGIN}/user/${userId}`,
-      {
-        method: "GET",
-        headers: headers,
-      }
-    );
-
-    if (response.status === 200) {
-      const user = await response.json();
-      return user;
-    } else {
-      throw new Error(`${response.status}: ${response.statusText}`);
-    }
+  const getUser: (userId: string) => Promise<User> = async (userId) => {
+    const response = await fetch(urls.user(userId), { headers: headers });
+    return await jsonOrError(response);
   };
 
   return {
     listTodos,
+    createTodo,
     saveTodo,
     deleteTodo,
     getUser,
   };
+};
+
+const jsonOrError = async (response: Response): Promise<any> => {
+  if (response.status === 200) {
+    return await response.json();
+  }
+
+  throw new Error(`${response.status}: ${response.statusText}`);
 };
 
 export type ServiceProps = {
