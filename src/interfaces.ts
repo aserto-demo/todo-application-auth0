@@ -34,7 +34,7 @@ export interface TodosPropsn {
   showCompleted: boolean;
   showActive: boolean;
   refreshTodos: () => void;
-  errorHandler(errorText: string): void;
+  errorHandler(errorText: string, autoClose?: number | boolean): void;
 }
 
 export interface AppProps {
