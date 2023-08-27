@@ -37,6 +37,7 @@ The following language-specific back-end sample apps are available, which demons
 | ---| --- | --- |
 | <img src="https://raw.githubusercontent.com/aserto-dev/aserto-docs/main/static/nodejs.svg" height="30" /> | Node.js | https://github.com/aserto-demo/todo-node-js-v2 |
 | <img src="https://raw.githubusercontent.com/aserto-dev/aserto-docs/main/static/go.svg" height="30" /> | Go | https://github.com/aserto-demo/todo-go-v2 |
+| <img src="https://raw.githubusercontent.com/aserto-dev/aserto-docs/main/static/java.svg" height="30" /> | Java | https://github.com/aserto-demo/todo-java-v2 |
 | <img src="https://raw.githubusercontent.com/aserto-dev/aserto-docs/main/static/python.svg" height="30" /> | Python | https://github.com/aserto-demo/todo-python-v2 |
 | <img src="https://raw.githubusercontent.com/aserto-dev/aserto-docs/main/static/ruby.svg" height="30" /> | Ruby | https://github.com/aserto-demo/todo-ruby-v2 |
 | <img src="https://raw.githubusercontent.com/aserto-dev/aserto-docs/main/static/dotnet-core.svg" height="30" /> | .NET | https://github.com/aserto-demo/todo-dotnet-v2 |
